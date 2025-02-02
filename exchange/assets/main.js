@@ -1,3 +1,7 @@
+// Last Modified: Sun, 02/02/2025 15:18 Malaysia Time
+// all changed are made in main2.js just in case you want to compare the changes
+// explanation of each code is AI generated but the code is written by half ai half me
+
 let min_fee = 5;
 let data = [
   {
