@@ -50,6 +50,20 @@
       .logo-spin {
         animation: flip 5s linear infinite;
       }
+      @keyframes float {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+      .float-animation {
+        animation: float 3s ease-in-out infinite;
+      }
       body {
         opacity: 0;
         transition: opacity 1s ease-in-out;
@@ -89,7 +103,7 @@
       }
     </style>
   </head>
-  <body class="w-full h-full bg-center back">
+  <body class="w-full h-full bg-center back float-animation">
     <div class="cursor"></div>
     <div class="cursor2"></div>
 
