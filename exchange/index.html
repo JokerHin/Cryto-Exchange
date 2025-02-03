@@ -332,15 +332,102 @@
     <script src="assets/main.js"></script>
     <script>
       const fromCryptoBtn = document.getElementById("fromCryptoBtn");
+      const toCryptoBtn = document.getElementById("toCryptoBtn");
+      const exchangeOptions = document.querySelectorAll(
+        "#exchangeOptions button"
+      );
+      const fromCryptoDiv = document.querySelectorAll("#fromCryptoDiv button");
+
       fromCryptoBtn.addEventListener("click", () => {
+        console.log("fromCryptoBtn clicked");
+        fromCryptoBtn.classList.add(
+          "ring-2",
+          "ring-sky-300",
+          "border-sky-300",
+          "bg-sky-300",
+          "bg-opacity-30",
+          "outline-none"
+        );
+        toCryptoBtn.classList.remove(
+          "ring-2",
+          "ring-sky-300",
+          "border-sky-300",
+          "bg-sky-300",
+          "bg-opacity-30",
+          "outline-none"
+        );
         document.getElementById("exchangeOptions").classList.add("hidden");
         document.getElementById("fromCryptoDiv").classList.remove("hidden");
       });
-      const toCryptoBtn = document.getElementById("toCryptoBtn");
+
       toCryptoBtn.addEventListener("click", () => {
+        console.log("toCryptoBtn clicked");
+        toCryptoBtn.classList.add(
+          "ring-2",
+          "ring-sky-300",
+          "border-sky-300",
+          "bg-sky-300",
+          "bg-opacity-30",
+          "outline-none"
+        );
+        fromCryptoBtn.classList.remove(
+          "ring-2",
+          "ring-sky-300",
+          "border-sky-300",
+          "bg-sky-300",
+          "bg-opacity-30",
+          "outline-none"
+        );
         document.getElementById("fromCryptoDiv").classList.add("hidden");
         document.getElementById("exchangeOptions").classList.remove("hidden");
       });
+
+      exchangeOptions.forEach((button) => {
+        button.addEventListener("click", () => {
+          exchangeOptions.forEach((btn) =>
+            btn.classList.remove(
+              "ring-2",
+              "ring-sky-300",
+              "border-sky-300",
+              "bg-sky-300",
+              "bg-opacity-30",
+              "outline-none"
+            )
+          );
+          button.classList.add(
+            "ring-2",
+            "ring-sky-300",
+            "border-sky-300",
+            "bg-sky-300",
+            "bg-opacity-30",
+            "outline-none"
+          );
+        });
+      });
+
+      fromCryptoDiv.forEach((button) => {
+        button.addEventListener("click", () => {
+          fromCryptoDiv.forEach((btn) =>
+            btn.classList.remove(
+              "ring-2",
+              "ring-sky-300",
+              "border-sky-300",
+              "bg-sky-300",
+              "bg-opacity-30",
+              "outline-none"
+            )
+          );
+          button.classList.add(
+            "ring-2",
+            "ring-sky-300",
+            "border-sky-300",
+            "bg-sky-300",
+            "bg-opacity-30",
+            "outline-none"
+          );
+        });
+      });
+
       const calculateBtn = document.querySelector("button.bg-white");
       calculateBtn.addEventListener("click", () => {
         const receiveBox = document.querySelector(".receive-box");
@@ -352,6 +439,7 @@
           receiveBox.classList.remove("show");
         }, 109);
       });
+
       window.addEventListener("load", () => {
         document.body.classList.add("loaded");
       });
