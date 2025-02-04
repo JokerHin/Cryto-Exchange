@@ -110,31 +110,6 @@ document.addEventListener("mouseup", function () {
   cursorinner.classList.remove("cursorinnerhover");
 });
 
-var b = document.querySelector("#copy");
-b.addEventListener("mouseover", () => {
-  cursor.classList.add("hover");
-});
-b.addEventListener("mouseleave", () => {
-  cursor.classList.remove("hover");
-});
-
-a.forEach((item) => {
-  item.addEventListener("mouseover", () => {
-    cursor.classList.add("hover");
-  });
-  item.addEventListener("mouseleave", () => {
-    cursor.classList.remove("hover");
-  });
-});
-
-// New event handler for calculating exchange
-const calcBtn = document.querySelector(
-  "button.bg-white.text-black.w-full.py-2.border.border-white\\/50.rounded-lg.active\\:scale-90.active\\:transition.active\\:delay-75"
-);
-
-let selectedFrom = null;
-let selectedTo = null;
-
 // Listen for user clicks on "exchangeOptions"
 document
   .querySelectorAll("#exchangeOptions button[data-from]")
@@ -142,6 +117,10 @@ document
     btn.addEventListener("click", () => {
       selectedFrom = btn.getAttribute("data-from");
       selectedTo = "Crypto";
+      document.querySelectorAll("#exchangeOptions button").forEach((b) => {
+        b.classList.remove("focus-style");
+      });
+      btn.classList.add("focus-style");
     });
   });
 
@@ -150,8 +129,15 @@ document.querySelectorAll("#fromCryptoDiv button[data-to]").forEach((btn) => {
   btn.addEventListener("click", () => {
     selectedFrom = "Crypto";
     selectedTo = btn.getAttribute("data-to");
+    document.querySelectorAll("#fromCryptoDiv button").forEach((b) => {
+      b.classList.remove("focus-style");
+    });
+    btn.classList.add("focus-style");
   });
 });
+
+// Ensure calcBtn is selected correctly
+const calcBtn = document.querySelector("button.bg-white");
 
 calcBtn.addEventListener("click", async () => {
   if (!selectedFrom || !selectedTo) return;
