@@ -244,7 +244,8 @@
         <p class="text-white text-[8pt] md:text-[10pt] text-left">$</p>
       </div>
       <input id="Enter amount" type="text" placeholder="$0"
-        class="bg-black text-white w-full px-3 py-2 rounded-lg border border-white/50 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-cyan-500/50 focus:border-cyan-500 focus:shadow-2xl focus:shadow-cyan-500/50 focus:outline-none" />
+        class="bg-black text-white w-full px-3 py-2 rounded-lg border border-white/50 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-cyan-500/50 focus:border-cyan-500 focus:shadow-2xl focus:shadow-cyan-500/50 focus:outline-none" 
+        oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value) this.value = '$ ' + this.value;" />
       <div
         class="bg-black text-white w-full p-4 focus:border-sky-300 border border-white/50 rounded-lg shadow-2xl shadow-cyan-500/50 ring-2">
         <p class="text-center text-[8pt] md:text-[10pt]">
@@ -386,18 +387,6 @@
       document.body.classList.add("loaded");
     });
 
-    const amountInput = document.getElementById("amountInput");
-
-    amountInput.addEventListener("input", (event) => {
-      // Ensure the input starts with "$ "
-      if (!event.target.value.startsWith("$ ")) {
-        event.target.value = "$ " + event.target.value.replace(/^\$/, "");
-      }
-
-      // Allow only numeric input after "$ "
-      event.target.value = "$ " + event.target.value.slice(2).replace(/[^0-9]/g, "");
-    });
-
     var cursor = document.querySelector(".cursor");
     var cursorinner = document.querySelector(".cursor2");
     var a = document.querySelectorAll("a");
@@ -407,17 +396,8 @@
     document.addEventListener("mousemove", function (e) {
       var x = e.clientX;
       var y = e.clientY;
-      // console.log({ x, y });
-      cursor.style.left = x + "px";
-      cursor.style.top = y + "px";    
-    });
-
-    document.addEventListener("mousemove", function (e) {
-      var x = e.clientX;
-      var y = e.clientY;
-      // console.log({ x, y });
-      cursorinner.style.left = x + "px";
-      cursorinner.style.top = y + "px";
+      cursor.style.transform = `translate(${x - 20}px, ${y - 20}px)`; // Adjust for cursor size
+      cursorinner.style.transform = `translate(${x - 5}px, ${y - 5}px)`; // Adjust for cursor size
     });
 
     document.addEventListener("mousedown", function () {
@@ -430,31 +410,27 @@
       cursorinner.classList.remove("cursorinnerhover");
     });
 
-    // document.getElementById('calculateBtn').addEventListener('click', function () {
-
-    //   const input = document.querySelector('input[type="text"]');
-
-    //   const amount = parseFloat(input.value) || 0;
-
-    //   const fee = 5;
-
-    //   const total = Math.max(amount - fee, 0); // Ensure total isn't negative
-
-    //   document.getElementById('resultAmount').innerText = `$${total.toFixedInt(2)}`;
-
-
-    // });
 
   </script>
   <script defer>
     document.addEventListener("DOMContentLoaded", function () {
       document.getElementById('calculateBtn').addEventListener('click', function () {
         const input = document.querySelector('input[type="text"]');
-        const amount = parseFloat(input.value) || 0;
+        const amount = parseFloat(input.value.replace('$', '')) || 0;
+        const selectedOption = document.querySelector('#exchangeOptions button.ring-2, #fromCryptoDiv button.ring-2');
+        
+        if (!selectedOption) {
+          alert('Please select an exchange option.');
+          return;
+        }
+
+        if (amount === 0) {
+          alert('Please enter an amount.');
+          return;
+        }
+
         const fee = 5;
         const total = Math.max(amount - fee, 0); // Ensure total isn't negative
-
-        
 
         document.getElementById('resultAmount').innerText = `$${total.toFixed(2)}`;
       });
