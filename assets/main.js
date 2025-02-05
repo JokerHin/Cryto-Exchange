@@ -1,155 +1,159 @@
-// Last Modified: Sun, 02/02/2025 15:18 Malaysia Time
-// all changed are made in main2.js just in case you want to compare the changes
-// explanation of each code is AI generated but the code is written by half ai half me
-
+// Define minimum fee
 let min_fee = 5;
+
+// Define currency exchange data
 let data = [
-  {
-    from: ["Wise", "Revolut", "Skrill"],
-    to: ["Crypto"],
-    calc: (amt) => {
-      if (amt >= 500) return 0.05;
-      if (amt >= 250) return 0.06;
-      return 0.07;
+    {
+        from: ["Wise", "Revolut", "Skrill"],
+        to: ["Crypto"],
+        calc: (amt) => {
+            if (amt >= 500) return 0.05;
+            if (amt >= 250) return 0.06;
+            return 0.07;
+        },
     },
-  },
-  {
-    from: ["Crypto"],
-    to: ["Crypto"],
-    calc: (amt) => {
-      if (amt >= 1000) return 0.01;
-      if (amt >= 500) return 0.02;
-      return 0.03;
+    {
+        from: ["Crypto"],
+        to: ["Crypto"],
+        calc: (amt) => {
+            if (amt >= 1000) return 0.01;
+            if (amt >= 500) return 0.02;
+            return 0.03;
+        },
     },
-  },
-  {
-    from: ["Crypto"],
-    to: ["Wise", "Revolut", "Skrill", "Cashapp", "Zelle", "Bank Transfer"],
-    calc: (amt) => {
-      if (amt >= 1000) return 0.04;
-      if (amt >= 500) return 0.05;
-      if (amt >= 250) return 0.06;
-      return 0.07;
+    {
+        from: ["Crypto"],
+        to: ["Wise", "Revolut", "Skrill", "Cashapp", "Zelle", "Bank Transfer"],
+        calc: (amt) => {
+            if (amt >= 1000) return 0.04;
+            if (amt >= 500) return 0.05;
+            if (amt >= 250) return 0.06;
+            return 0.07;
+        },
     },
-  },
-  {
-    from: ["Crypto"],
-    to: ["UPI"],
-    calc: (amt) => {
-      if (amt >= 100) return 88 * amt;
-      return 87 * amt;
+    {
+        from: ["Crypto"],
+        to: ["UPI"],
+        calc: (amt) => {
+            if (amt >= 100) return 88 * amt;
+            return 87 * amt;
+        },
     },
-  },
-  {
-    from: ["Crypto"],
-    to: ["PHP"],
-    calc: (amt) => {
-      if (amt >= 1000) {
-        return 0.05;
-      } else if (amt >= 500) {
-        return 0.06;
-      } else {
-        return 0.07;
-      }
+    {
+        from: ["Crypto"],
+        to: ["PHP"],
+        calc: (amt) => {
+            if (amt >= 1000) {
+                return 0.05;
+            } else if (amt >= 500) {
+                return 0.06;
+            } else {
+                return 0.07;
+            }
+        },
     },
-  },
 ];
 
-async function getPHPExchangeRate() {
-  let json = await fetch(
-    "https://latest.currency-api.pages.dev/v1/currencies/usd.json"
-  );
-  let a = await json.json();
-  return a.usd.php;
+/*
+
+// Store exchange rates globally
+let exchangeRates = {};
+
+// Fetch exchange rates from API
+async function getExchangeRates() {
+    try {
+        const response = await fetch("https://latest.currency-api.pages.dev/v1/currencies/usd.json");
+        const data = await response.json();
+        exchangeRates = data.usd;
+        // Update exchange rate display
+        document.querySelector('#exchangeRate').textContent = `1 USD = ${exchangeRates.eur?.toFixed(4) || 'N/A'} EUR`;
+    } catch (error) {
+        console.error('Error fetching rates:', error);
+    }
 }
 
-async function calc(from, to, amount) {
-  let x = data.find((a) => a.from.includes(from) && a.to.includes(to));
+// Initialize exchange rates
+getExchangeRates();
 
-  if (to == "PHP") {
-    let a =
-      x.calc(amount) * amount > min_fee
+*/
+
+// Function to calculate currency conversion
+async function calc(from, to, amount) {
+    let x = data.find((a) => a.from.includes(from) && a.to.includes(to));
+
+    if (to == "PHP") {
+        let a =
+            x.calc(amount) * amount > min_fee
+                ? Number((amount - x.calc(amount) * amount).toFixed(2))
+                : amount - min_fee;
+        let b = await getPHPExchangeRate();
+        return b * a;
+    } else if (to == "UPI") {
+        return x.calc(amount);
+    }
+
+    return x.calc(amount) * amount > min_fee
         ? Number((amount - x.calc(amount) * amount).toFixed(2))
         : amount - min_fee;
-    let b = await getPHPExchangeRate();
-    return b * a;
-  } else if (to == "UPI") {
-    return x.calc(amount);
-  }
-
-  return x.calc(amount) * amount > min_fee
-    ? Number((amount - x.calc(amount) * amount).toFixed(2))
-    : amount - min_fee;
 }
 
-var cursor = document.querySelector(".cursor");
-var cursorinner = document.querySelector(".cursor2");
-var a = document.querySelectorAll("a");
-var span = document.querySelectorAll("span");
+const x = data.find(a => a.from.includes(from) && a.to.includes(to));
+if (!x) return 0;
 
-document.addEventListener("mousemove", function (e) {
-  var x = e.clientX;
-  var y = e.clientY;
-  cursor.style.transform = `translate3d(calc(${e.clientX}px - 50%), calc(${e.clientY}px - 50%), 0)`;
-});
+let fee = x.calc(amount) * amount;
+fee = fee > min_fee ? fee : min_fee;
 
-document.addEventListener("mousemove", function (e) {
-  var x = e.clientX;
-  var y = e.clientY;
-  cursorinner.style.left = x + "px";
-  cursorinner.style.top = y + "px";
-});
+if (to === "PHP") {
+    const rate = exchangeRates.php || await getPHPExchangeRate();
+    return rate * (amount - fee);
+}
 
-document.addEventListener("mousedown", function () {
-  cursor.classList.add("click");
-  cursorinner.classList.add("cursorinnerhover");
-});
+if (to === "UPI") return x.calc(amount);
 
-document.addEventListener("mouseup", function () {
-  cursor.classList.remove("click");
-  cursorinner.classList.remove("cursorinnerhover");
-});
+return amount - fee;
+
+
+// Maintain PHP rate compatibility
+async function getPHPExchangeRate() {
+    await getExchangeRates();
+    return exchangeRates.php;
+}
+
+const calcBtn = document.getElementById("calculateBtn");
+let selectedFrom = null;
+let selectedTo = null;
 
 // Listen for user clicks on "exchangeOptions"
 document
-  .querySelectorAll("#exchangeOptions button[data-from]")
-  .forEach((btn) => {
-    btn.addEventListener("click", () => {
-      selectedFrom = btn.getAttribute("data-from");
-      selectedTo = "Crypto";
-      document.querySelectorAll("#exchangeOptions button").forEach((b) => {
-        b.classList.remove("focus-style");
-      });
-      btn.classList.add("focus-style");
+    .querySelectorAll("#exchangeOptions button[data-from]")
+    .forEach((btn) => {
+        btn.addEventListener("click", () => {
+            selectedFrom = btn.getAttribute("data-from");
+            selectedTo = "Crypto";
+            document.querySelectorAll("#exchangeOptions button").forEach((b) => {
+                b.classList.remove("focus-style");
+            });
+            btn.classList.add("focus-style");
+        });
     });
-  });
+// Exchange option handlers
+document.querySelectorAll("#exchangeOptions button[data-from]").forEach(btn => {
+    btn.addEventListener("click", () => {
+        selectedFrom = btn.dataset.from;
+        selectedTo = "Crypto";
+    });
+});
 
 // Listen for user clicks on "fromCryptoDiv"
 document.querySelectorAll("#fromCryptoDiv button[data-to]").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    selectedFrom = "Crypto";
-    selectedTo = btn.getAttribute("data-to");
-    document.querySelectorAll("#fromCryptoDiv button").forEach((b) => {
-      b.classList.remove("focus-style");
+    btn.addEventListener("click", () => {
+        selectedFrom = "Crypto";
+        selectedTo = btn.getAttribute("data-to");
+        document.querySelectorAll("#fromCryptoDiv button").forEach((b) => {
+            b.classList.remove("focus-style");
+        });
+        btn.classList.add("focus-style");
     });
-    btn.classList.add("focus-style");
-  });
 });
 
-// Ensure calcBtn is selected correctly
-const calcBtn = document.querySelector("button.bg-white");
 
-calcBtn.addEventListener("click", async () => {
-  if (!selectedFrom || !selectedTo) return;
-  const amountInput = document.querySelector('input[placeholder="$0"]');
-  if (!String(amountInput.value).length) return;
-
-  let receiveAmt = await calc(
-    selectedFrom,
-    selectedTo,
-    Number(amountInput.value)
-  );
-  let resultEl = document.querySelector("p.text-[20pt].font-bold.text-center");
-  resultEl.textContent = `$${receiveAmt.toFixed(2)}`;
-  document.getElementById("receiveCurrency").textContent = `in ${selectedTo}`;
-});
