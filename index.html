@@ -243,7 +243,7 @@
         </p>
         <p class="text-white text-[8pt] md:text-[10pt] text-left">$</p>
       </div>
-      <input id="amountInput" type="text" placeholder="$0"
+      <input id="Enter amount" type="text" placeholder="$0"
         class="bg-black text-white w-full px-3 py-2 rounded-lg border border-white/50 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-cyan-500/50 focus:border-cyan-500 focus:shadow-2xl focus:shadow-cyan-500/50 focus:outline-none" />
       <div
         class="bg-black text-white w-full p-4 focus:border-sky-300 border border-white/50 rounded-lg shadow-2xl shadow-cyan-500/50 ring-2">
@@ -258,7 +258,7 @@
         <p id="resultAmount" class="text-[16pt] md:text-[20pt] font-bold text-center">$0.00</p>
         <p id="receiveCurrency" class="text-center"></p>
       </div>
-      <button
+      <button id="calculateBtn"
         class="bg-white text-black w-full py-2 border border-white/50 rounded-lg active:scale-90 active:transition active:delay-75">
         Calculate Exchange
       </button>
@@ -402,16 +402,20 @@
     var cursorinner = document.querySelector(".cursor2");
     var a = document.querySelectorAll("a");
     var span = document.querySelectorAll("span");
+    // console.log({ cursor, cursorinner});
 
     document.addEventListener("mousemove", function (e) {
       var x = e.clientX;
       var y = e.clientY;
-      cursor.style.transform = `translate3d(calc(${e.clientX}px - 50%), calc(${e.clientY}px - 50%), 0)`;
+      // console.log({ x, y });
+      cursor.style.left = x + "px";
+      cursor.style.top = y + "px";    
     });
 
     document.addEventListener("mousemove", function (e) {
       var x = e.clientX;
       var y = e.clientY;
+      // console.log({ x, y });
       cursorinner.style.left = x + "px";
       cursorinner.style.top = y + "px";
     });
@@ -426,22 +430,38 @@
       cursorinner.classList.remove("cursorinnerhover");
     });
 
-    document.getElementById('calculateBtn').addEventListener('click', function () {
+    // document.getElementById('calculateBtn').addEventListener('click', function () {
 
-      const input = document.querySelector('input[type="text"]');
+    //   const input = document.querySelector('input[type="text"]');
 
-      const amount = parseFloat(input.value) || 0;
+    //   const amount = parseFloat(input.value) || 0;
 
-      const fee = 5;
+    //   const fee = 5;
 
-      const total = Math.max(amount - fee, 0); // Ensure total isn't negative
+    //   const total = Math.max(amount - fee, 0); // Ensure total isn't negative
 
-      document.getElementById('resultAmount').innerText = `$${total.toFixedInt(2)}`;
+    //   document.getElementById('resultAmount').innerText = `$${total.toFixedInt(2)}`;
 
-    });
+
+    // });
 
   </script>
-  <script src="/assets/main.js"></script>
+  <script defer>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById('calculateBtn').addEventListener('click', function () {
+        const input = document.querySelector('input[type="text"]');
+        const amount = parseFloat(input.value) || 0;
+        const fee = 5;
+        const total = Math.max(amount - fee, 0); // Ensure total isn't negative
+
+        
+
+        document.getElementById('resultAmount').innerText = `$${total.toFixed(2)}`;
+      });
+    });
+  </script> 
+
+  <!-- <script src="/assets/main.js"></script> -->
 </body>
 
 </html>
