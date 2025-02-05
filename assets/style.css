@@ -95,7 +95,7 @@ input[type="number"] {
   pointer-events: none;
   left: 0;
   top: 0;
-  z-index: 100;
+  z-index: 999;
   transform: translate(calc(-50% + 15px), -50%);
 }
 
@@ -108,8 +108,8 @@ input[type="number"] {
   position: fixed;
   transform: translate(-50%, -50%);
   pointer-events: none;
-  z-index: 100;
-  transition: width 0.3s, height 0.3s, opacity 0.3s;
+  z-index: 999;
+  transition: -100s;
 }
 
 .hover {
