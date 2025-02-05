@@ -255,7 +255,7 @@
       <div
         class="bg-black text-white w-full p-4 py-6 border border-white/50 rounded-lg shadow-2xl shadow-cyan-500/50 ring-2 mb-4 receive-box">
         <p class="font-semibold text-center">You will receive:</p>
-        <p class="text-[16pt] md:text-[20pt] font-bold text-center">$0.00</p>
+        <p id="resultAmount" class="text-[16pt] md:text-[20pt] font-bold text-center">$0.00</p>
         <p id="receiveCurrency" class="text-center"></p>
       </div>
       <button
@@ -426,7 +426,19 @@
       cursorinner.classList.remove("cursorinnerhover");
     });
 
-    
+    document.getElementById('calculateBtn').addEventListener('click', function () {
+
+      const input = document.querySelector('input[type="text"]');
+
+      const amount = parseFloat(input.value) || 0;
+
+      const fee = 5;
+
+      const total = Math.max(amount - fee, 0); // Ensure total isn't negative
+
+      document.getElementById('resultAmount').textContent = `$${total.toFixed(2)}`;
+
+    });
 
   </script>
 </body>
