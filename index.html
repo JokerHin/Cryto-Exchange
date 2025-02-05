@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exchange</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.25/paper-full.min.js"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" href="./images/favicon.png" type="image/x-icon" />
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://kit.fontawesome.com/22d5c66829.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/gsap.min.js"></script>
+  <style>
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(-360deg);
+      }
+    }
+
+    @keyframes flip {
+      0% {
+        transform: perspective(1000px) rotateY(0deg);
+      }
+
+      50% {
+        transform: perspective(1000px) rotateY(180deg);
+      }
+
+      100% {
+        transform: perspective(1000px) rotateY(360deg);
+      }
+    }
+
+    .logo-spin {
+      animation: flip 5s linear infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    .float-animation {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    body {
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    body.loaded {
+      opacity: 1;
+    }
+
+    .receive-box {
+      transition: transform 0.1s ease-in-out, opacity 0.1s ease-in-out;
+    }
+
+    .receive-box.show {
+      transform: scale(1.1);
+    }
+  </style>
+  <style>
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .focus\:animate-gradient:focus {
+      background: linear-gradient(-90deg,
+          rgba(34, 211, 238, 0.3),
+          rgba(135, 222, 236, 0.7),
+          rgba(103, 232, 249, 0.3));
+      background-size: 400% 400%;
+      animation: gradientAnimation 3s ease;
+    }
+
+    @keyframes grow {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .grow {
+      animation: grow 2s infinite;
+    }
+
+    .text-shadow {
+      text-shadow: 0px 0px 50px rgba(255, 255, 255, 0.8);
+    }
+
+    /* Add these styles to center the small cursor within the big cursor */
+    .cursor, .cursor2 {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      transition: transform 0.1s ease-in-out; /* Reduce delay */
+    }
+
+    .cursor {
+      width: 40px; /* Adjust size as needed */
+      height: 40px; /* Adjust size as needed */
+      background-color: rgba(255, 255, 255, 0.5);
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor2 {
+      width: 10px; /* Adjust size as needed */
+      height: 10px; /* Adjust size as needed */
+      background-color: rgba(255, 255, 255, 1);
+      transform: translate(-50%, -50%);
+    }
+
+    .click {
+      transform: scale(0.75); /* Adjust scale as needed */
+    }
+
+    .cursorinnerhover {
+      transform: scale(1.5); /* Adjust scale as needed */
+    }
+  </style>
+</head>
+
+<body class="w-full h-full bg-center back float-animation ">
+  <div class="cursor"></div>
+  <div class="cursor2"></div>
+
+  <div class="flex flex-col items-center justify-start h-full pt-6 px-4 md:px-12">
+    <img src="./images/logo.png" class="w-16 h-16 md:w-24 md:h-24 mb-5 logo-spin" />
+    <h1
+      class="text-white text-3xl md:text-5xl gradient font-[800] text-center leading-relaxed pb-4 w-full mt-5 grow text-shadow">
+      Crypto Exchange
+    </h1>
+    <p class="text-white my-2 text-[8pt] md:text-[10pt] mb-7">
+      Calculate your crypto exchange rate including fees
+    </p>
+    <div id="choose" class="flex flex-row justify-center w-full md:w-[40%] gap-4 mb-2">
+      <button id="toCryptoBtn"
+        class="text-white text-[8pt] md:text-[10pt] font-semibold text-center w-full border border-white/50 py-2 rounded-lg cursor-pointer transition-all duration-300 ease-in-out focus:ring-2 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient focus:outline-none">
+        To Crypto
+      </button>
+      <button id="fromCryptoBtn"
+        class="text-white text-[8pt] md:text-[10pt] font-semibold text-center w-full border border-white/50 py-2 rounded-lg cursor-pointer transition-all duration-300 ease-in-out focus:ring-2 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient focus:outline-none">
+        From Crypto
+      </button>
+    </div>
+    <div id="newExchangeSection" class="bg-black text-white pt-6 w-full md:w-2/5 flex flex-col items-center space-y-4">
+      <div id="exchangeOptions" class="w-full flex flex-col md:flex-row justify-center gap-2">
+        <button data-from="Wise"
+          class="bg-black text-white px-4 py-2 shadow-xl border border-white/50 w-full md:w-1/3 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img src="https://cdn-icons-png.flaticon.com/512/893/893081.png" alt="image" class="w-[20px]" />
+          Wise
+        </button>
+
+        <button data-from="Revolut"
+          class="bg-black text-white px-4 py-2 shadow-xl border border-white/50 w-full md:w-1/3 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img src="https://cdn-icons-png.flaticon.com/512/893/893081.png" alt="image" class="w-[20px]" />
+          Revolut
+        </button>
+        <button data-from="Skrill"
+          class="bg-black text-white px-4 py-2 shadow-xl border border-white/50 w-full md:w-1/3 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img src="https://cdn-icons-png.flaticon.com/512/733/733372.png" alt="image" class="w-[20px]" />
+          Skrill
+        </button>
+      </div>
+      <div id="fromCryptoDiv"
+        class="hidden w-full md:w-[100%] grid grid-cols-3 gap-2 max-h-36 overflow-auto p-2 rounded-lg mt-[-10px]">
+        <button data-to="Exchange"
+          class="bg-black text-white px-4 py-2 shadow-xl focus:border-sky-300 border border-white/50 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img src="https://cdn-icons-png.freepik.com/256/13126/13126628.png" alt="image"
+            class="w-[20px] items-center" />
+          Cashapp
+        </button>
+        <button data-to="Cashapp"
+          class="bg-black text-white px-4 py-2 shadow-xl focus:border-sky-300 border border-white/50 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img src="https://cdn-icons-png.flaticon.com/512/893/893081.png" alt="image" class="w-[20px] items-center" />
+          Wise
+        </button>
+        <button data-to="Wise"
+          class="bg-black text-white px-4 py-2 shadow-xl focus:border-sky-300 border border-white/50 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img src="https://cdn-icons-png.flaticon.com/512/893/893081.png" alt="image" class="w-[20px] items-center" />
+          Revolut
+        </button>
+        <button
+          class="bg-black text-white px-4 py-2 shadow-xl focus:border-sky-300 border border-white/50 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img src="https://cdn-icons-png.flaticon.com/512/893/893081.png" alt="image" class="w-[20px] items-center" />
+          Visa/MC
+        </button>
+        <button
+          class="bg-black text-white px-4 py-2 shadow-xl focus:border-sky-300 border border-white/50 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img src="https://cdn-icons-png.flaticon.com/512/733/733372.png" alt="image" class="w-[20px] items-center" />
+          Skrill
+        </button>
+        <button
+          class="bg-black text-white px-4 py-2 shadow-xl focus:border-sky-300 border border-white/50 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img
+            src="https://png.pngtree.com/png-clipart/20231220/original/pngtree-bank-transfer-icon-savings-photo-png-image_13884882.png"
+            alt="image" class="w-[20px] items-center" />
+          Bank Transfer
+        </button>
+        <button
+          class="bg-black text-white px-4 py-2 shadow-xl focus:border-sky-300 border border-white/50 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img src="https://cdn-icons-png.freepik.com/256/13126/13126628.png" alt="image"
+            class="w-[20px] items-center" />
+          Zelle
+        </button>
+        <button
+          class="bg-black text-white px-4 py-2 shadow-xl focus:border-sky-300 border border-white/50 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img src="https://cdn-icons-png.freepik.com/256/13126/13126628.png" alt="image"
+            class="w-[20px] items-center" />
+          UPI
+        </button>
+        <button
+          class="bg-black text-white px-4 py-2 shadow-xl focus:border-sky-300 border border-white/50 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img src="https://cdn-icons-png.flaticon.com/512/2879/2879440.png" alt="image"
+            class="w-[20px] items-center" />
+          Crypto to crypto
+        </button>
+        <button
+          class="bg-black text-white px-4 py-2 shadow-xl focus:border-sky-300 border border-white/50 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img src="https://files.svgcdn.io/token-branded/ton.svg" alt="image" class="w-[20px] items-center" />
+          TON
+        </button>
+        <button
+          class="bg-black text-white px-4 py-2 shadow-xl focus:border-sky-300 border border-white/50 rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-sky-300 focus:border-sky-300 focus:animate-gradient">
+          <img src="https://img.icons8.com/ios11/512/228BE6/lock.png" alt="image" class="w-[20px] items-center" />
+          B4U
+        </button>
+      </div>
+      <div class="w-full md:w-[100%]">
+        <p class="text-white text-[8pt] md:text-[10pt] text-left">
+          Amount (USD)
+        </p>
+        <p class="text-white text-[8pt] md:text-[10pt] text-left">$</p>
+      </div>
+      <input id="Enter amount" type="text" placeholder="$0"
+        class="bg-black text-white w-full px-3 py-2 rounded-lg border border-white/50 transition-all duration-300 ease-in-out focus:ring-4 focus:ring-cyan-500/50 focus:border-cyan-500 focus:shadow-2xl focus:shadow-cyan-500/50 focus:outline-none" 
+        oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value) this.value = '$ ' + this.value;" />
+      <div
+        class="bg-black text-white w-full p-4 focus:border-sky-300 border border-white/50 rounded-lg shadow-2xl shadow-cyan-500/50 ring-2">
+        <p class="text-center text-[8pt] md:text-[10pt]">
+          Minimum Fee: $5.00
+        </p>
+        <p class="text-center text-[8pt] md:text-[10pt]">Exchange Rate:</p>
+      </div>
+      <div
+        class="bg-black text-white w-full p-4 py-6 border border-white/50 rounded-lg shadow-2xl shadow-cyan-500/50 ring-2 mb-4 receive-box">
+        <p class="font-semibold text-center">You will receive:</p>
+        <p id="resultAmount" class="text-[16pt] md:text-[20pt] font-bold text-center">$0.00</p>
+        <p id="receiveCurrency" class="text-center"></p>
+      </div>
+      <button id="calculateBtn"
+        class="bg-white text-black w-full py-2 border border-white/50 rounded-lg active:scale-90 active:transition active:delay-75">
+        Calculate Exchange
+      </button>
+      <button
+        class="flex items-center justify-center gap-4 text-white w-full py-2 border border-white/50 rounded-lg active:scale-90 active:transition active:delay-75 shadow-lg shadow-cyan-500/50 ring-2 mb-10">
+        <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/telegram-white-icon.png"
+          alt="telegram" class="w-[20px] md:w-[25px]" />
+        Contact to Exchange
+      </button>
+      <div class="h-[50px]"></div>
+    </div>
+  </div>
+  <!-- <script src="assets/main.js"></script> -->
+  <script>
+    const fromCryptoBtn = document.getElementById("fromCryptoBtn");
+    const toCryptoBtn = document.getElementById("toCryptoBtn");
+    const exchangeOptions = document.querySelectorAll(
+      "#exchangeOptions button"
+    );
+    const fromCryptoDiv = document.querySelectorAll("#fromCryptoDiv button");
+
+    fromCryptoBtn.addEventListener("click", () => {
+      console.log("fromCryptoBtn clicked");
+      fromCryptoBtn.classList.add(
+        "ring-2",
+        "ring-sky-300",
+        "border-sky-300",
+        "bg-sky-300",
+        "bg-opacity-30",
+        "outline-none"
+      );
+      toCryptoBtn.classList.remove(
+        "ring-2",
+        "ring-sky-300",
+        "border-sky-300",
+        "bg-sky-300",
+        "bg-opacity-30",
+        "outline-none"
+      );
+      document.getElementById("exchangeOptions").classList.add("hidden");
+      document.getElementById("fromCryptoDiv").classList.remove("hidden");
+    });
+
+    toCryptoBtn.addEventListener("click", () => {
+      console.log("toCryptoBtn clicked");
+      toCryptoBtn.classList.add(
+        "ring-2",
+        "ring-sky-300",
+        "border-sky-300",
+        "bg-sky-300",
+        "bg-opacity-30",
+        "outline-none"
+      );
+      fromCryptoBtn.classList.remove(
+        "ring-2",
+        "ring-sky-300",
+        "border-sky-300",
+        "bg-sky-300",
+        "bg-opacity-30",
+        "outline-none"
+      );
+      document.getElementById("fromCryptoDiv").classList.add("hidden");
+      document.getElementById("exchangeOptions").classList.remove("hidden");
+    });
+
+    exchangeOptions.forEach((button) => {
+      button.addEventListener("click", () => {
+        exchangeOptions.forEach((btn) =>
+          btn.classList.remove(
+            "ring-2",
+            "ring-sky-300",
+            "border-sky-300",
+            "bg-sky-300",
+            "bg-opacity-30",
+            "outline-none"
+          )
+        );
+        button.classList.add(
+          "ring-2",
+          "ring-sky-300",
+          "border-sky-300",
+          "bg-sky-300",
+          "bg-opacity-30",
+          "outline-none"
+        );
+      });
+    });
+
+    fromCryptoDiv.forEach((button) => {
+      button.addEventListener("click", () => {
+        fromCryptoDiv.forEach((btn) =>
+          btn.classList.remove(
+            "ring-2",
+            "ring-sky-300",
+            "border-sky-300",
+            "bg-sky-300",
+            "bg-opacity-30",
+            "outline-none"
+          )
+        );
+        button.classList.add(
+          "ring-2",
+          "ring-sky-300",
+          "border-sky-300",
+          "bg-sky-300",
+          "bg-opacity-30",
+          "outline-none"
+        );
+      });
+    });
+
+    const calculateBtn = document.querySelector("button.bg-white");
+    calculateBtn.addEventListener("click", () => {
+      const receiveBox = document.querySelector(".receive-box");
+      receiveBox.classList.remove("show");
+      setTimeout(() => {
+        receiveBox.classList.add("show");
+      }, 1);
+      setTimeout(() => {
+        receiveBox.classList.remove("show");
+      }, 109);
+    });
+
+    window.addEventListener("load", () => {
+      document.body.classList.add("loaded");
+    });
+
+    var cursor = document.querySelector(".cursor");
+    var cursorinner = document.querySelector(".cursor2");
+    var a = document.querySelectorAll("a");
+    var span = document.querySelectorAll("span");
+    // console.log({ cursor, cursorinner});
+
+    document.addEventListener("mousemove", function (e) {
+      var x = e.clientX;
+      var y = e.clientY;
+      cursor.style.transform = `translate(${x - 20}px, ${y - 20}px)`; // Adjust for cursor size
+      cursorinner.style.transform = `translate(${x - 5}px, ${y - 5}px)`; // Adjust for cursor size
+    });
+
+    document.addEventListener("mousedown", function () {
+      cursor.classList.add("click");
+      cursorinner.classList.add("cursorinnerhover");
+    });
+
+    document.addEventListener("mouseup", function () {
+      cursor.classList.remove("click");
+      cursorinner.classList.remove("cursorinnerhover");
+    });
+
+
+  </script>
+  <script defer>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById('calculateBtn').addEventListener('click', function () {
+        const input = document.querySelector('input[type="text"]');
+        const amount = parseFloat(input.value.replace('$', '')) || 0;
+        const selectedOption = document.querySelector('#exchangeOptions button.ring-2, #fromCryptoDiv button.ring-2');
+        
+        if (!selectedOption) {
+          alert('Please select an exchange option.');
+          return;
+        }
+
+        if (amount === 0) {
+          alert('Please enter an amount.');
+          return;
+        }
+
+        const fee = 5;
+        const total = Math.max(amount - fee, 0); // Ensure total isn't negative
+
+        document.getElementById('resultAmount').innerText = `$${total.toFixed(2)}`;
+      });
+    });
+  </script> 
+
+  <!-- <script src="/assets/main.js"></script> -->
+</body>
+
+</html>
