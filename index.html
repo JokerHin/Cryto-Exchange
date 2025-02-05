@@ -436,7 +436,11 @@
 
       const total = Math.max(amount - fee, 0); // Ensure total isn't negative
 
+<<<<<<< HEAD
       document.getElementById('resultAmount').innerText = `$${total.toFixedInt(2)}`;
+=======
+      document.getElementById('resultAmount').textContent = `$${total.toFixed(2)}`;
+>>>>>>> 6790deb57fbff237e21c2f15fe6728d4a93a97f8
 
     });
 
