@@ -1,0 +1,165 @@
+@font-face {
+  font-family: "Game-Font";
+  src: url(./font.ttf);
+}
+
+body,
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background: radial-gradient(ellipse at bottom, #1d1f21 0%, #090a0f 100%);
+  cursor: none;
+  overflow-x: hidden;
+  overflow-y: auto; /* This will keep the vertical scrollbar if necessary */
+  scrollbar-width: thin; /* Set the width of the scrollbar */
+  scrollbar-color: white #0c0d12; /* Set thumb color to white and track color to transparent */
+}
+
+/* For Webkit browsers (Chrome, Safari, Edge) */
+body::-webkit-scrollbar {
+  width: 8px; /* Set the width of the scrollbar */
+}
+
+body::-webkit-scrollbar-button {
+  display: none; /* Hide the top and bottom arrows */
+}
+
+body::-webkit-scrollbar-track {
+  background: transparent; /* Set the track background to transparent */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: white; /* Set the color of the thumb (the part that moves) */
+  border-radius: 10px; /* Optional: Round the corners of the thumb */
+}
+
+h1,
+p,
+a,
+button {
+  font-family: "Poppins", sans-serif;
+}
+
+.back {
+  background: #000000;
+  --gap: 5em;
+  --line: 1px;
+  --color: rgba(255, 255, 255, 0.2);
+
+  background-image: linear-gradient(
+      -90deg,
+      transparent calc(var(--gap) - var(--line)),
+      var(--color) calc(var(--gap) - var(--line) + 1px),
+      var(--color) var(--gap)
+    ),
+    linear-gradient(
+      0deg,
+      transparent calc(var(--gap) - var(--line)),
+      var(--color) calc(var(--gap) - var(--line) + 1px),
+      var(--color) var(--gap)
+    );
+  background-size: var(--gap) var(--gap);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield; /* For Firefox */
+}
+
+@media only screen and (max-width: 768px) {
+  .cursor {
+    display: none;
+  }
+  .cursor2 {
+    display: none;
+  }
+  body,
+  html {
+    cursor: auto;
+  }
+}
+
+.cursor {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  border: 1px solid rgb(255, 255, 255);
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out; /* Adjusted transition */
+  position: fixed;
+  pointer-events: none;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  transform: translate(calc(-50% + 15px), -50%);
+}
+
+.cursor2 {
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
+  background-color: rgb(255, 255, 255);
+  opacity: 0.3;
+  position: fixed;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 999;
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out; /* Adjusted transition */
+}
+
+.click {
+  transform: scale(0.9); /* Adjusted scale for better visual effect */
+}
+
+.hover {
+  background-color: rgb(255, 255, 255);
+  opacity: 0.5;
+}
+
+.cursorinnerhover {
+  transform: scale(2.5); /* Adjusted scale for zoom out effect */
+  transition: transform 0.2s ease-out; /* Smooth transition for zoom out */
+}
+
+.cursorinnerhover-return {
+  transform: scale(1); /* Return to original size */
+  transition: transform 0.2s ease-out; /* Smooth transition for return */
+}
+
+select:focus {
+  outline: none;
+  border-color: inherit;
+  box-shadow: none;
+}
+
+select:focus::-ms-value {
+  outline: none;
+}
+
+.form-submit-btn {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  align-self: flex-start;
+  font-family: inherit;
+  color: #717171;
+  font-weight: 600;
+  background: #313131;
+  border: 1px solid #414141;
+  padding: 12px 16px;
+  font-size: inherit;
+  gap: 8px;
+  margin-top: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.form-submit-btn:hover {
+  background-color: #2e2e2e;
+  border-color: #2e2e2e;
+}
