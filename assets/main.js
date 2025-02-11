@@ -1,5 +1,8 @@
-// Define minimum fee
+// Constants and Variables
+// WARNING: These variables are in global scope - be careful of naming conflicts
 let min_fee = 5;
+let selectedFrom = null;
+let selectedTo = null;
 
 // Define currency exchange data
 let data = [
@@ -7,8 +10,8 @@ let data = [
         from: ["Wise", "Revolut", "Skrill"],
         to: ["Crypto"],
         calc: (amt) => {
-            if (amt >= 500) return 0.05;
-            if (amt >= 250) return 0.06;
+            if (amt <= 500) return 0.05;
+            if (amt <= 250) return 0.06;
             return 0.07;
         },
     },
@@ -16,8 +19,8 @@ let data = [
         from: ["Crypto"],
         to: ["Crypto"],
         calc: (amt) => {
-            if (amt >= 1000) return 0.01;
-            if (amt >= 500) return 0.02;
+            if (amt <= 1000) return 0.01;
+            if (amt <= 500) return 0.02;
             return 0.03;
         },
     },
@@ -25,9 +28,9 @@ let data = [
         from: ["Crypto"],
         to: ["Wise", "Revolut", "Skrill", "Cashapp", "Zelle", "Bank Transfer"],
         calc: (amt) => {
-            if (amt >= 1000) return 0.04;
-            if (amt >= 500) return 0.05;
-            if (amt >= 250) return 0.06;
+            if (amt <= 1000) return 0.04;
+            if (amt <= 500) return 0.05;
+            if (amt <= 250) return 0.06;
             return 0.07;
         },
     },
@@ -77,15 +80,27 @@ getExchangeRates();
 
 */
 
-// Function to calculate currency conversion
+// Calculation Function
+// NOTICE: This function assumes specific HTML structure exists
 async function calc(from, to, amount) {
-    let x = data.find((a) => a.from.includes(from) && a.to.includes(to));
+    // Make sure amount is validated before passing to this function
+    if (!amount || isNaN(amount)) {
+        console.error('Invalid amount provided');
+        return 0;
+    }
 
+    // Find matching exchange rate data
+    let x = data.find((a) => a.from.includes(from) && a.to.includes(to));
+    if (!x) {
+        console.error('No exchange rate found for given currencies');
+        return 0;
+    }
+
+    // Special handling for PHP and UPI
     if (to == "PHP") {
-        let a =
-            x.calc(amount) * amount > min_fee
-                ? Number((amount - x.calc(amount) * amount).toFixed(2))
-                : amount - min_fee;
+        let a = x.calc(amount) * amount > min_fee
+            ? Number((amount - x.calc(amount) * amount).toFixed(2))
+            : amount - min_fee;
         let b = await getPHPExchangeRate();
         return b * a;
     } else if (to == "UPI") {
@@ -120,25 +135,26 @@ async function getPHPExchangeRate() {
 }
 
 const calcBtn = document.getElementById("calculateBtn");
-let selectedFrom = null;
-let selectedTo = null;
 
-// Listen for user clicks on "exchangeOptions"
-document
-    .querySelectorAll("#exchangeOptions button[data-from]")
-    .forEach((btn) => {
-        btn.addEventListener("click", () => {
-            selectedFrom = btn.getAttribute("data-from");
-            selectedTo = "Crypto";
-            document.querySelectorAll("#exchangeOptions button").forEach((b) => {
-                b.classList.remove("focus-style");
-            });
-            btn.classList.add("focus-style");
+// Event Listeners Section
+// CAUTION: There are currently two similar event listeners for #exchangeOptions
+// This causes duplicate handlers - should remove one of these blocks
+document.querySelectorAll("#exchangeOptions button[data-from]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+        // First implementation with focus-style
+        selectedFrom = btn.getAttribute("data-from");
+        selectedTo = "Crypto";
+        document.querySelectorAll("#exchangeOptions button").forEach((b) => {
+            b.classList.remove("focus-style");
         });
+        btn.classList.add("focus-style");
     });
-// Exchange option handlers
+});
+
+// TODO: Remove this duplicate event listener
 document.querySelectorAll("#exchangeOptions button[data-from]").forEach(btn => {
     btn.addEventListener("click", () => {
+        // Second implementation without focus-style
         selectedFrom = btn.dataset.from;
         selectedTo = "Crypto";
     });

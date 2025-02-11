@@ -10,7 +10,6 @@ html {
   padding: 0;
   font-family: "Poppins", sans-serif;
   background: radial-gradient(ellipse at bottom, #1d1f21 0%, #090a0f 100%);
-  cursor: none;
   overflow-x: hidden;
   overflow-y: auto; /* This will keep the vertical scrollbar if necessary */
   scrollbar-width: thin; /* Set the width of the scrollbar */
