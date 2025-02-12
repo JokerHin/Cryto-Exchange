@@ -69,7 +69,6 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 input[type="number"] {
   -moz-appearance: textfield; /* For Firefox */
-  
 }
 
 @media only screen and (max-width: 768px) {
@@ -90,7 +89,7 @@ input[type="number"] {
   height: 50px;
   border-radius: 100%;
   border: 1px solid rgb(255, 255, 255);
-  transition: all 200ms ease-out;
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out; /* Adjusted transition */
   position: fixed;
   pointer-events: none;
   left: 0;
@@ -109,7 +108,11 @@ input[type="number"] {
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 999;
-  transition: -100s;
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out; /* Adjusted transition */
+}
+
+.click {
+  transform: scale(0.9); /* Adjusted scale for better visual effect */
 }
 
 .hover {
@@ -118,10 +121,13 @@ input[type="number"] {
 }
 
 .cursorinnerhover {
-  background-color: transparent;
-  width: 50px;
-  height: 50px;
-  opacity: 0.5;
+  transform: scale(2.5); /* Adjusted scale for zoom out effect */
+  transition: transform 0.2s ease-out; /* Smooth transition for zoom out */
+}
+
+.cursorinnerhover-return {
+  transform: scale(1); /* Return to original size */
+  transition: transform 0.2s ease-out; /* Smooth transition for return */
 }
 
 select:focus {
