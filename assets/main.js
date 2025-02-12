@@ -10,8 +10,8 @@ let data = [
         from: ["Wise", "Revolut", "Skrill"],
         to: ["Crypto"],
         calc: (amt) => {
-            if (amt <= 500) return 0.05;
-            if (amt <= 250) return 0.06;
+            if (amt >= 500) return 0.05;
+            if (amt >= 250) return 0.06;
             return 0.07;
         },
     },
@@ -19,8 +19,8 @@ let data = [
         from: ["Crypto"],
         to: ["Crypto"],
         calc: (amt) => {
-            if (amt <= 1000) return 0.01;
-            if (amt <= 500) return 0.02;
+            if (amt >= 1000) return 0.01;
+            if (amt >= 500) return 0.02;
             return 0.03;
         },
     },
@@ -28,9 +28,9 @@ let data = [
         from: ["Crypto"],
         to: ["Wise", "Revolut", "Skrill", "Cashapp", "Zelle", "Bank Transfer"],
         calc: (amt) => {
-            if (amt <= 1000) return 0.04;
-            if (amt <= 500) return 0.05;
-            if (amt <= 250) return 0.06;
+            if (amt >= 1000) return 0.04;
+            if (amt >= 500) return 0.05;
+            if (amt >= 250) return 0.06;
             return 0.07;
         },
     },
@@ -80,6 +80,8 @@ getExchangeRates();
 
 */
 
+
+
 // Calculation Function
 // NOTICE: This function assumes specific HTML structure exists
 async function calc(from, to, amount) {
@@ -111,6 +113,8 @@ async function calc(from, to, amount) {
         ? Number((amount - x.calc(amount) * amount).toFixed(2))
         : amount - min_fee;
 }
+
+calc();
 
 const x = data.find(a => a.from.includes(from) && a.to.includes(to));
 if (!x) return 0;
